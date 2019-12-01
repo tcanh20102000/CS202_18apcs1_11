@@ -19,6 +19,10 @@ void user::display()
 {
 	draw->display(xP,yP);
 }
+void user::disAppear()
+{
+	draw->disAppear(xP,yP);
+}
 void user::move(int direct)
 {
 //	int xtmp = xP, ytmp=yP;
@@ -38,6 +42,11 @@ void user::move(int direct)
 		yP = 1;
 	else if (yP > 5)
 		yP = 5;
+}
+void user::getCor(int &x, int &line)
+{
+	x = xP;
+	line = yP;
 }
 bool user::isInter(int x)
 {

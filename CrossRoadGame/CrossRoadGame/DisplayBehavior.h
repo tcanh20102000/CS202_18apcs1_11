@@ -7,6 +7,7 @@ class displayB {
 public:
 	virtual void display(int x, int line) = 0;
 	virtual void displayRev(int x, int line) {};
+	virtual void disAppear(int x, int line) {};
 };
 class displayBird : public displayB {
 public:
@@ -29,5 +30,6 @@ public:
 class displayPlayer : public displayB {
 public:
 	void display(int x, int line);
+	void disAppear(int x, int line);
 };
 #endif // !_DisplayBehavior_h

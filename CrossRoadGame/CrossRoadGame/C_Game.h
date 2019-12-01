@@ -12,14 +12,19 @@ public:
 	game();
 	~game();
 	game(int x, int lin, int speed);
+	int pauseLane();
 	void display();
 	void move();
 	void movePlayer();
+	vector<int> pauseGame();
+	void gamePlay();
+	bool check_Intersec();
 private:
 	user* player;
 	int speed;
 	int x, line;
 	vector<vehicle*> vehi;
+//	bool isGreen;
 };
 
 #endif // !_C_Game_h_

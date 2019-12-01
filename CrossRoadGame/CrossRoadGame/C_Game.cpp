@@ -8,9 +8,9 @@ game::game() {
 	vehi.push_back(tmp);
 	vehicle* tmp2 = new truck(18, 2);
 	vehi.push_back(tmp2);
-	vehicle* tmp3 = new bird(31, 2);
+	vehicle* tmp3 = new bird(31, 3);
 	vehi.push_back(tmp3);
-	vehicle* tmp4 = new dino(31, 1);
+	vehicle* tmp4 = new dino(31, 4);
 	vehi.push_back(tmp4);
 	player = new user;
 }
@@ -31,18 +31,35 @@ void game::display()
 	for (int i = 0; i < vehi.size(); ++i)
 		vehi[i]->display();
 }
+int game::pauseLane()
+{
+	srand((int)time(0));
+	return (rand() % (3 + 1));
+}
 void game::move()
 {
 	int step = 13;
 	color(240);
 	display();
 	int j = 0;
-	while (j<30) {
+	int lin = pauseLane();
+	while (j < 20) {
 		Sleep(speed);
 		color(7);
 		display();
-		for (int i = 0; i < vehi.size(); ++i)
-			vehi[i]->move(step);
+		if (j < 5)
+		{
+			for (int i = 0; i < vehi.size(); ++i)
+			{
+				if(i != lin)
+					vehi[i]->move(step);
+			}
+		}
+		else
+		{
+			for (int i = 0; i < vehi.size(); ++i)
+				vehi[i]->move(step);
+		}
 		color(240);
 		display();
 		++j;
@@ -70,4 +87,38 @@ void game::movePlayer() {
 		player->display();
 		m = _getch();
 	}
+}
+
+vector<int> game::pauseGame()
+{
+	vector<int> store;
+	int x, line;
+	for (int i = 0; i < vehi.size(); ++i)
+	{
+		vehi[i]->getCor(x, line);
+		store.push_back(x);
+		store.push_back(line);
+	}
+	player->getCor(x, line);
+	store.push_back(x);
+	store.push_back(line);
+	return store;
+}
+void game::gamePlay()
+{
+	move();
+
+}
+bool game::check_Intersec()
+{
+	int xP, yP;
+	player->getCor(xP, yP);
+	for (int i = 0; i < vehi.size(); ++i)
+	{
+		int xtmp, ytmp;
+		vehi[i]->getCor(xtmp, ytmp);
+		if (yP == ytmp)
+			return false;
+	}
+	return true;
 }

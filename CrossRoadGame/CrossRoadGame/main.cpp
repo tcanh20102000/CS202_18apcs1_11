@@ -2,6 +2,8 @@
 #include "DisplayBehavior.h"
 #include "C_Game.h"
 
+
+bool isPlaying = true;
 mutex x;
 void run() {
 	x.lock();
@@ -12,16 +14,9 @@ void run() {
 int main()
 {
 	thread t(run);
-/*	t.join();
-	if (_getch() == 13)
-	{
-		gotoxy(0, 50);
-		cout << "Enter" << endl;
-	}*/
 	game init;
-	init.movePlayer();
 	color(7);
 	t.join();
-	gotoxy(0, 50);
+	gotoxy(0, 30);
 	return 0;
 }

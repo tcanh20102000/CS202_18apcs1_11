@@ -92,27 +92,33 @@ void displayTruck::displayRev(int x, int line)
 }
 void displayPlayer::display(int x, int line)
 {
-/*	int y = 5 + (line - 1) * 6;
+	int y = 5 + (line - 1) * 6;
 	gotoxy(x, y);
 	int m = y - 4;
 	int n1 = 42 - x;
-	gotoxy(n1+1, m);
+	gotoxy(n1+2, m);
+	cout << "|_|";
+	gotoxy(x, y + 1);
+	gotoxy(n1, m + 1);
+	cout << "/|_|\\";
+	gotoxy(x, y + 2);
+	gotoxy(n1, m + 2);
+	cout << "/  \\";
+}
+void displayPlayer::disAppear(int x, int line)
+{
+	int y = 5 + (line - 1) * 6;
+	gotoxy(x, y);
+	int m = y - 4;
+	int n1 = 42 - x;
+	gotoxy(n1 + 1, m);
 	cout << "   ";
 	gotoxy(x, y + 1);
 	gotoxy(n1, m + 1);
-	cout << "    ";
+	cout << "     ";
 	gotoxy(x, y + 2);
 	gotoxy(n1, m + 2);
-	cout << "    ";*/
-	int y = 5 + (line - 1) * 6;
-	for (int i = 0; i < 1; i++) {
-
-		for (int j = 0; j < 7; j++) {
-			if (x - j > 9) {
-				gotoxy(x - j, i + y); cout << " ";
-			}
-		}
-	}
+	cout << "     ";
 }
 
 
