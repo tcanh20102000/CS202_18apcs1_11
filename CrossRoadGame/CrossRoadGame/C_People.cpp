@@ -31,16 +31,16 @@ void user::move(int direct)
 	else if (direct == 1)
 		yP += 1;
 	else if (direct == 2)
-		xP += 15;
+		xP += 5;
 	else
-		xP -= 15;
+		xP -= 5;
 	if (xP <= 10)
 		xP = 90;
 	else if (xP >= 90)
 		xP = 10;
-	if (yP < 2)
-		yP = 1;
-	else if (yP > 5)
+	if (yP > 5)
+		yP = 5;
+	else if (yP < 1)
 		yP = 5;
 }
 void user::getCor(int &x, int &line)

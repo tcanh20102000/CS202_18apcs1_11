@@ -15,11 +15,13 @@ public:
 	int pauseLane();
 	void display();
 	void move();
-	void movePlayer();
-	vector<int> pauseGame();
+	int movePlayer();
+	int pauseGame();
 	void gamePlay();
 	bool check_Intersec();
+	void nextRound();
 private:
+	int round;
 	user* player;
 	int speed;
 	int x, line;
