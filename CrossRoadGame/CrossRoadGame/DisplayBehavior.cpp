@@ -92,6 +92,7 @@ void displayTruck::displayRev(int x, int line)
 }
 void displayPlayer::display(int x, int line)
 {
+	color(7);
 	int y = 5 + (line - 1) * 6;
 	gotoxy(x, y);
 	int m = y - 4;
@@ -112,7 +113,7 @@ void displayPlayer::disAppear(int x, int line)
 	int m = y - 4;
 	int n1 = 42 - x;
 	gotoxy(n1 + 1, m);
-	cout << "   ";
+	cout << "     ";
 	gotoxy(x, y + 1);
 	gotoxy(n1, m + 1);
 	cout << "     ";
