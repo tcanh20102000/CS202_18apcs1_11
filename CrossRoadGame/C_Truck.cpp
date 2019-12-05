@@ -4,6 +4,8 @@ truck::truck(int x, int y)
 {
 	xC = x;
 	line = y;
+	length = 9;
+	type = 2;
 }
 truck::~truck()
 {
@@ -19,8 +21,8 @@ void truck::display()
 void truck::move(int step)
 {
 	xC += step;
-	if (xC > 93) xC = 18;
-	else if (xC < 0) xC = 93;
+	if (xC > 96) xC = 18;
+	else if (xC < 0) xC = 96;
 }
 int truck::lastPoint()
 {

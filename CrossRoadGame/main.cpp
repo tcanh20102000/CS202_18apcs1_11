@@ -1,40 +1,69 @@
 #include "FrontEnd.h"
 #include "DisplayBehavior.h"
 #include "C_Game.h"
+#include <future>
+#include <condition_variable>
 
-mutex x;
-void run() {
-	x.lock();
-	game start;
-	start.move();
-	x.unlock();
-}
-void PauseBoard() {//new
-	color(114);//Box color
-	int x0 = 35;
-	int y0 = 8;
-	for (int i = 0; i < 12; i++) {
-		for (int j = 0; j < 60; j++) {
-			gotoxy(x0 + j, y0 + i); cout << " ";
-		}
+class Stoppable
+{
+	promise<void> exitSignal;
+	future<void> futureObj;
+public:
+	Stoppable() :
+		futureObj(exitSignal.get_future())
+	{
+
 	}
-	gotoxy(x0 + 2, y0 + 1);
-	cout << "Please input your save file destination:" ;
-	gotoxy(x0 + 2, y0 + 3); color(15);//Path color
-	string a;
-	cin.ignore(1000, '\n');
-	getline(cin, a);
-}
+	Stoppable(Stoppable&& obj) : exitSignal(std::move(obj.exitSignal)), futureObj(std::move(obj.futureObj))
+	{
+		std::cout << "Move Constructor is called" << std::endl;
+	}
+	Stoppable& operator=(Stoppable&& obj)
+	{
+		std::cout << "Move Assignment is called" << std::endl;
+		exitSignal = std::move(obj.exitSignal);
+		futureObj = std::move(obj.futureObj);
+		return *this;
+	}
+	virtual void run(game &src) = 0;
+/*	void operator()()
+	{
+		run();
+	}*/
+	bool stopRequested()
+	{
+		if (futureObj.wait_for(std::chrono::milliseconds(0)) == std::future_status::timeout)
+			return false;
+		return true;
+	}
+	void stop()
+	{
+		exitSignal.set_value();
+	}
+};
+bool isDead = false;
+class MyTask : public Stoppable
+{
+public:
+	mutex x;
+	void run(game &src)
+	{
+		x.lock();
+		src.move();
+		x.unlock();
+	}
+};
 
 int main()
 {
-	thread t(run);
+/*	MyTask task;
 	game init;
+	task.run(init);
+	if (init.movePlayer() == 1)
+		isDead = true;
+	task.stop();*/
+	string a = " ";
+	game init(a);
 	init.movePlayer();
-	//PauseBoard();
-	color(7);
-	t.join();
-	gotoxy(0, 40);
-	system("pause");
 	return 0;
 }

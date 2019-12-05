@@ -5,6 +5,8 @@ dino::dino(int x, int y)
 {
 	xC = x;
 	line = y;
+	length = 7;
+	type = 4;
 }
 dino::~dino()
 {
@@ -20,8 +22,8 @@ void dino::display()
 void dino::move(int step)
 {
 	xC += step;
-	if (xC > 93) xC = 18;
-	else if (xC < 0) xC = 93;
+	if (xC > 96) xC = 18;
+	else if (xC < 0) xC = 96;
 }
 int dino::lastPoint()
 {
