@@ -4,6 +4,8 @@ car::car(int x, int y)
 {
 	xC = x;
 	line = y;
+	type = 1;
+	draw = new displayCar;
 }
 car::~car()
 {
@@ -13,14 +15,13 @@ car::~car()
 }
 void car::display()
 {
-	draw = new displayCar;
 	draw->display(xC, line);
 }
 void car::move(int step)
 {
 	xC += step;
-	if (xC > 96) xC = 18;
-	else if (xC < 0) xC = 96;
+	if (xC > 87) xC = 5;
+	else if (xC < 0) xC = 87;
 }
 int car::lastPoint()
 {

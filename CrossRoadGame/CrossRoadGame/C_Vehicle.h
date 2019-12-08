@@ -13,7 +13,9 @@ public:
 		x = xC;
 		y = line;
 	}
+	int Objtype() { return type; };
 protected:
+	int type;
 	int xC, line;
 	displayB* draw;
 };

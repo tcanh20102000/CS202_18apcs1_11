@@ -3,7 +3,7 @@
 user::user() {
 	draw = new displayPlayer;
 	xP = 45;
-	yP = 5;
+	yP = 24;
 }
 user::user(int x, int line)
 {
@@ -25,11 +25,10 @@ void user::disAppear()
 }
 void user::move(int direct)
 {
-//	int xtmp = xP, ytmp=yP;
 	if (direct == 0)
-		yP -= 1;
+		yP -= 5;
 	else if (direct == 1)
-		yP += 1;
+		yP += 5;
 	else if (direct == 2)
 		xP += 5;
 	else
@@ -38,10 +37,8 @@ void user::move(int direct)
 		xP = 90;
 	else if (xP >= 90)
 		xP = 10;
-	if (yP > 5)
-		yP = 5;
-	else if (yP < 1)
-		yP = 5;
+	if (yP > 24)
+		yP = 24;
 }
 void user::getCor(int &x, int &line)
 {

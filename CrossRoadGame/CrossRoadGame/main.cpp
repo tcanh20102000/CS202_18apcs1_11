@@ -4,65 +4,52 @@
 #include <future>
 #include <condition_variable>
 
-class Stoppable
+void ShowConsoleCursor(bool showFlag)
 {
-	promise<void> exitSignal;
-	future<void> futureObj;
-public:
-	Stoppable() :
-		futureObj(exitSignal.get_future())
-	{
+	HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	}
-	Stoppable(Stoppable&& obj) : exitSignal(std::move(obj.exitSignal)), futureObj(std::move(obj.futureObj))
-	{
-		std::cout << "Move Constructor is called" << std::endl;
-	}
-	Stoppable& operator=(Stoppable&& obj)
-	{
-		std::cout << "Move Assignment is called" << std::endl;
-		exitSignal = std::move(obj.exitSignal);
-		futureObj = std::move(obj.futureObj);
-		return *this;
-	}
-	virtual void run(game &src) = 0;
-/*	void operator()()
-	{
-		run();
-	}*/
-	bool stopRequested()
-	{
-		if (futureObj.wait_for(std::chrono::milliseconds(0)) == std::future_status::timeout)
-			return false;
-		return true;
-	}
-	void stop()
-	{
-		exitSignal.set_value();
-	}
-};
-bool isDead = false;
-class MyTask : public Stoppable
-{
-public:
-	mutex x;
-	void run(game &src)
-	{
-		x.lock();
-		src.move();
-		x.unlock();
-	}
-};
+	CONSOLE_CURSOR_INFO     cursorInfo;
 
+	GetConsoleCursorInfo(out, &cursorInfo);
+	cursorInfo.bVisible = showFlag; // set the cursor visibility
+	SetConsoleCursorInfo(out, &cursorInfo);
+}
 int main()
 {
-/*	MyTask task;
-	game init;
-	task.run(init);
-	if (init.movePlayer() == 1)
-		isDead = true;
-	task.stop();*/
-	game init;
-	init.movePlayer();
+	fixConsoleWindows();
+	ShowConsoleCursor(false);
+	CROSS_STREET_SLASH();
+	system("cls");
+	int choice = Menu();
+	while (choice != 3)
+	{
+		game init;
+		if (choice == 0)
+		{
+			int choice2 = init.movePlayer();
+			if (choice2== 0)
+				system("cls");
+			else if (choice2 == 2)
+			{
+				system("cls");
+				cout << "Congratulation" << endl;
+				Sleep(800);
+			}
+			system("cls");
+		}
+		else if (choice == 1)
+		{
+			if (init.loadGame())
+			{
+				if (init.movePlayer() == 0)
+					system("cls");
+			}
+			else system("cls");
+		}
+		else if (choice == 2)
+			break;
+		choice = Menu();
+	}
+	color(7);
 	return 0;
 }
