@@ -23,7 +23,7 @@ void truck::display()
 void truck::move(int step)
 {
 	xC += step;
-	if (xC > 87) xC = 5;
+	if (xC > 85) xC = 5;
 	else if (xC < 0) xC = 87;
 }
 int truck::lastPoint()

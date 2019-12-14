@@ -1,2 +1,11 @@
-﻿  main.cpp
+﻿  C_Game.cpp
+I:\Y_2019-2020\Semester1\CS202\ProjectCS\CS202_18apcs1_11\CrossRoadGame\CrossRoadGame\C_Game.cpp(16,21): warning C4018:  '<': signed/unsigned mismatch
+I:\Y_2019-2020\Semester1\CS202\ProjectCS\CS202_18apcs1_11\CrossRoadGame\CrossRoadGame\C_Game.cpp(28,20): warning C4018:  '<': signed/unsigned mismatch
+I:\Y_2019-2020\Semester1\CS202\ProjectCS\CS202_18apcs1_11\CrossRoadGame\CrossRoadGame\C_Game.cpp(166,20): warning C4018:  '<': signed/unsigned mismatch
+I:\Y_2019-2020\Semester1\CS202\ProjectCS\CS202_18apcs1_11\CrossRoadGame\CrossRoadGame\C_Game.cpp(319,20): warning C4018:  '<': signed/unsigned mismatch
+I:\Y_2019-2020\Semester1\CS202\ProjectCS\CS202_18apcs1_11\CrossRoadGame\CrossRoadGame\C_Game.cpp(334,20): warning C4018:  '<': signed/unsigned mismatch
+I:\Y_2019-2020\Semester1\CS202\ProjectCS\CS202_18apcs1_11\CrossRoadGame\CrossRoadGame\C_Game.cpp(377,21): warning C4018:  '<': signed/unsigned mismatch
+  main.cpp
+  Generating Code...
+I:\Y_2019-2020\Semester1\CS202\ProjectCS\CS202_18apcs1_11\CrossRoadGame\CrossRoadGame\C_Game.cpp(387,21): warning C4018:  '<': signed/unsigned mismatch
   CrossRoadGame.vcxproj -> I:\Y_2019-2020\Semester1\CS202\ProjectCS\CS202_18apcs1_11\CrossRoadGame\Debug\CrossRoadGame.exe

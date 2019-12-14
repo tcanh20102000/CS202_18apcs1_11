@@ -36,13 +36,20 @@ int game::rand_Range(int min, int max)
 void game::nextRound()
 {
 	srand((int)time(0));
+	int dist = rand_Range(12, 15);
 	int xco = 6 + rand() % 85, y = 4;
-	if (round == 4 || round == 5 || round == 5)
-		if (xco > 94)
+	if (round == 4 || round == 3)
+	{
+		if (xco + 2 * dist > 94)
 			xco = 4;
+	}
+	else if (round == 5)
+	{
+		if (xco + 3 * dist > 94)
+			xco = 4;
+	}
 	if (vehi.size() != 0)
 		vehi.clear();
-	int dist = 11;
 	if (round == 1)
 	{
 		vehicle* v1 = new car(xco, y);
@@ -91,7 +98,7 @@ void game::nextRound()
 	{
 		vehicle* tmp = new car(xco+dist, y);
 		vehi.push_back(tmp);
-		vehicle* tmpC = new car(xco+2*dist, y);
+		vehicle* tmpC = new car(xco+2*dist+2, y);
 		vehi.push_back(tmpC);
 		vehicle* tmp2 = new truck(xco+dist, y+5);
 		vehi.push_back(tmp2);
@@ -105,10 +112,10 @@ void game::nextRound()
 		vehi.push_back(tmp4);
 		vehicle* tmp4D = new dino(xco+2*dist, y+14);
 		vehi.push_back(tmp4D);
-		speed = 150;
+		speed = 100;
 	}
 	else if (round==5){
-		speed = 50;
+		speed = 100;
 		vehicle* tmp = new car(xco + dist, y);
 		vehi.push_back(tmp);
 		vehicle* tmpC = new car(xco + 2 * dist, y);
@@ -135,54 +142,9 @@ void game::nextRound()
 		vehi.push_back(tmp4D1);
 	}
 }
-/*int game::move(bool isD, int lin, int &wait)
-{
-	while (!_kbhit())
-	{
-		
-		int step = 5;
-		color(240);
-		display();
-		Line();
-		player->display();
-		color(7);
-		display();
-		Sleep(speed);
-		if (lin == 1 && wait < 5)
-		{
-			light->display(93, 3);
-			light2->displayRev(93, 8);
-		}
-		else if (lin == 2 && wait < 5)
-		{
-			light->displayRev(93, 3);
-			light2->display(93, 8);
-		}
-		else {
-			light->displayRev(93, 3);
-			light2->displayRev(93, 8);
-		}
-		for (int i = 0; i < vehi.size(); ++i)
-		{
-			if (vehi[i]->Objtype() != lin)
-				vehi[i]->move(step);
-		}
-		color(240);
-		Line();
-		display();
-		color(7);
-		if (!check_Intersec())
-		{
-			isD = true;
-			return -1;
-		}
-		++wait;
-	}
-	return 0;
-}*/
 void game::move()
 {
-	int step = 5;
+	int step = 3;
 	color(240);
 	display();
 	Line();
@@ -206,10 +168,6 @@ void game::move()
 		if (vehi[i]->Objtype() != lin)
 			vehi[i]->move(step);
 	}
-/*	color(240);
-	Line();
-	display();
-	Sleep(speed);*/
 }
 
 int game::movePlayer() {
@@ -222,13 +180,13 @@ int game::movePlayer() {
 	int wait = 0;
 	while (!isDead)
 	{
-//		int lin = rand_Range(1, 2);
 		while (!_kbhit())
 		{
 			move();
 			if (!check_Intersec())
 			{
 				isDead = true;
+				PlaySound(TEXT("gameover.wav"), NULL, SND_FILENAME | SND_ASYNC);
 				return -1;
 			}
 		}
@@ -239,8 +197,12 @@ int game::movePlayer() {
 		{
 			player->move(0);
 			player->getCor(xp, yp);
+//			PlaySound(TEXT("jump.wav"), NULL, SND_FILENAME | SND_ASYNC);
 			if (!check_Intersec())
 			{
+				PlaySound(TEXT("dead.wav"), NULL, SND_FILENAME | SND_ASYNC);
+				Sleep(700);
+				PlaySound(TEXT("gameover.wav"), NULL, SND_FILENAME | SND_ASYNC);
 				isDead = true;
 				return -1;
 			}
@@ -248,6 +210,7 @@ int game::movePlayer() {
 			{
 				++round;
 				if (round > 5) {
+					PlaySound(TEXT("champion.wav"), NULL, SND_FILENAME | SND_ASYNC);
 					return 2; // wingame return 0;
 				}
 				nextRound();
@@ -291,18 +254,29 @@ int game::movePlayer() {
 			int tmp = pauseGame();
 			if (tmp == 1)
 				return 1; // save game and back to menu return 1;
+			else continue;
+//			system("cls");
 		}
 		else if (m == 27)
 		{
 			system("cls");
-			cout << "Do You Want To Exit Game?(Y)?";
+			cout << "Do You Want To Exit Game?(Y/N)?";
 			int n = _getch();
-			if (n == 'y' || n == 'Y')
-			{
-				isDead = true;
-				return 0;
-			}
 			//Back to Menu
+			while (1)
+			{
+				if (n == 'y' || n == 'Y')
+				{
+					isDead = true;
+					return 0;
+				}
+				else if (n == 'n' || n == 'N')
+				{
+					system("cls");
+					break;
+				}
+				n = _getch();
+			}
 		}		
 		color(240);
 		player->display();
@@ -313,22 +287,28 @@ int game::pauseGame()
 {
 	system("cls");
 	cout << "<<<< Pause Game >>>>" << endl;
-	cout << "Press 1: Save And Quit" << endl;
-	cout << "Press 2: Back To Game" << endl;
+	cout << "Press L: Save And Quit" << endl;
+	cout << "Press Esc: Back" << endl;
 	int m = _getch();
-	if (m == 76 || m == 108)//save 
+	while (1)
 	{
-		system("cls");
-		SaveGame();
-		system("cls");
+		if (m == 'L' || m == 'l')//save 
+		{
+			system("cls");
+			int c = SaveGame();
+			if (c == 1)
+				return 2;
+			else if (c == 2)
+				return 1;
+		}
+		else if (m == 27)
+		{
+			system("cls");
+			return 2;
+		}
+		m = _getch();
 	}
-	else return 1;
-	cout << "Do you want continue?(Y or N)";
-	int n = _getch();
-	system("cls");
-	if (n == 89 || n == 121)
-		return 2;
-	else return 1;
+//	return 1;
 }
 void game::gamePlay()
 {
@@ -372,12 +352,20 @@ bool game::check_Intersec()
 	}
 	return true;
 }
-void game::SaveGame() {
+int game::SaveGame() {
 	system("cls");
 	//cin.ignore(1000, '\n');
 	string path;
 	color(7);
-	cout << "Input the destination path:"; getline(cin, path);
+	cout << "Press Esc: Back" << endl;
+	cout << "Input the destination path:";
+	int m =_getch();
+	if (m == 27)
+	{
+		system("cls");
+		return 1;
+	}
+	getline(cin, path);
 	string file_name;
 	cout << "Enter File Name: "; getline(cin, file_name);
 	path = path + "\\" + file_name + ".txt";
@@ -402,8 +390,20 @@ void game::SaveGame() {
 	}
 	fout.close();
 	cout << "Save file successfully" << endl;
+	cout << "Do you want continue?(Y or N)";
+	int n = _getch();
+//	system("cls");
+	while (1)
+	{
+		if (n == 'Y' || n == 'y')
+			return 2;
+		else if (n == 'N' || n == 'n')
+			return 1;
+		n = _getch();
+	}
 	Sleep(1000);
 	system("cls");
+	return 2;
 }
 bool game::loadGame() {
 	color(7);

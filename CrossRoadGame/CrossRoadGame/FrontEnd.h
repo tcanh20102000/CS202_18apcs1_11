@@ -12,7 +12,7 @@
 #include <Windows.h>
 #include <thread>
 #include <mutex>
-
+#pragma comment(lib, "winmm.lib")
 
 using namespace std;
 void gotoxy(int x, int y);

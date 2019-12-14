@@ -20,8 +20,8 @@ void car::display()
 void car::move(int step)
 {
 	xC += step;
-	if (xC > 87) xC = 5;
-	else if (xC < 0) xC = 87;
+	if (xC > 85) xC = 5;
+	else if (xC < 0) xC = 85;
 }
 int car::lastPoint()
 {

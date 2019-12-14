@@ -20,7 +20,8 @@ void bird::display()
 void bird::move(int step)
 {
 	xC += step;
-	if (xC > 75) xC = 4;
+	if (xC > 74 && xC < 76) xC = 4;
+	else if (xC >= 75) xC = 11;
 	else if (xC < 0) xC = 75;
 }
 int bird::lastPoint()

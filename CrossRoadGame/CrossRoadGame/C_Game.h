@@ -21,7 +21,7 @@ public:
 	void gamePlay();
 	bool check_Intersec();
 	void nextRound();
-	void SaveGame();
+	int SaveGame();
 	bool loadGame();
 private:
 	int round;
