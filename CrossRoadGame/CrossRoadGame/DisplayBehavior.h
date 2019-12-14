@@ -32,4 +32,9 @@ public:
 	void display(int x, int line);
 	void disAppear(int x, int line);
 };
+class displayLight :public displayB {
+public:
+	void display(int x, int line);
+	void displayRev(int x, int line);
+};
 #endif // !_DisplayBehavior_h

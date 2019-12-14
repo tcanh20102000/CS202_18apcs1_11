@@ -12,7 +12,7 @@
 #include <Windows.h>
 #include <thread>
 #include <mutex>
-
+#pragma comment(lib, "winmm.lib")
 
 using namespace std;
 void gotoxy(int x, int y);
@@ -20,5 +20,7 @@ void color(int x);
 void Line();
 void showLogoandMenu();
 int Menu();
-
+void fixConsoleWindows();
+void CROSS_STREET_SLASH();
+void CROSS_STREET();
 #endif // FRONTEND_H_INCLUDED

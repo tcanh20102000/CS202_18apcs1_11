@@ -5,6 +5,8 @@ dino::dino(int x, int y)
 {
 	xC = x;
 	line = y;
+	type = 4;
+	draw = new displayDino;
 }
 dino::~dino()
 {
@@ -14,14 +16,13 @@ dino::~dino()
 }
 void dino::display()
 {
-	draw = new displayDino;
 	draw->display(xC, line);
 }
 void dino::move(int step)
 {
 	xC += step;
-	if (xC > 96) xC = 18;
-	else if (xC < 0) xC = 96;
+	if (xC > 85) xC = 5;
+	else if (xC < 0) xC = 85;
 }
 int dino::lastPoint()
 {

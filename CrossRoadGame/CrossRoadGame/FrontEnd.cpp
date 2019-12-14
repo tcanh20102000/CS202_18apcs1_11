@@ -6,7 +6,12 @@ void gotoxy(int x, int y) {
 	COORD c = { x, y };
 	SetConsoleCursorPosition(h, c);
 }
-
+void fixConsoleWindows() {
+	HWND consoleWindow = GetConsoleWindow();
+	LONG style = GetWindowLong(consoleWindow, GWL_STYLE);
+	style = style & ~(WS_MAXIMIZEBOX) & ~(WS_THICKFRAME);
+	SetWindowLong(consoleWindow, GWL_STYLE, style);
+}
 void color(int x)
 {
 	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -266,13 +271,13 @@ void Line() {
 	gotoxy(94, y); printf("%c", 191);
 	color(7);
 	for (int i = 0; i < 4; i++) {
-		y += 6;
+		y += 5;
 		for (int x = 4; x < 94; x++) {
 			gotoxy(x, y); printf("%c", 196);
 		}
 	}
 	color(9);
-	y += 6;
+	y += 5;
 	gotoxy(4, y); printf("%c", 192);
 	for (int x = 5; x < 94; x++) {
 		gotoxy(x, y); printf("%c", 196);
@@ -286,6 +291,6 @@ void Line() {
 		//Instruction
 	color(11);
 	gotoxy(96, y); cout << "Press L to save game";
-	gotoxy(96, y + 6); cout << "Press T to load save game";
-	gotoxy(96, y + 12); cout << "Press W,A,S,D to move the char";
+	gotoxy(96, y + 5); cout << "Press T to load save game";
+	gotoxy(96, y + 10); cout << "Press W,A,S,D to move the char";
 }

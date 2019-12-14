@@ -10,6 +10,7 @@ public:
 	void display();
 	void move(int step);
 	int lastPoint();
+//	displayB* light;
 };
 
 
