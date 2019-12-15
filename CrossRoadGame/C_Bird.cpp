@@ -4,8 +4,6 @@ bird::bird(int x, int y)
 {
 	xC = x;
 	line = y;
-	length = 11;
-	type = 3;
 }
 bird::~bird()
 {
@@ -21,8 +19,8 @@ void bird::display()
 void bird::move(int step)
 {
 	xC += step;
-	if (xC > 96) xC = 18;
-	else if (xC < 0) xC = 96;
+	if (xC > 93) xC = 18;
+	else if (xC < 0) xC = 93;
 }
 int bird::lastPoint()
 {

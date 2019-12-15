@@ -6,29 +6,24 @@
 #include "C_Bird.h"
 #include "C_Dino.h"
 #include "C_People.h"
-
+#include <utility>
 class game {
 public:
 	game();
-	game(string a);
 	~game();
 	game(int x, int lin, int speed);
-	int pauseLane();
 	void display();
 	void move();
-	int movePlayer();
-	int pauseGame();
-	void gamePlay();
-	bool check_Intersec();
-	void SaveGame();
-	void nextRound();
+	void movePlayer();
+	void SubThread();
 private:
-	int round;
 	user* player;
 	int speed;
 	int x, line;
 	vector<vehicle*> vehi;
-//	bool isGreen;
+	pair<int, int>danger1, danger2;
+	pair<int, int>pos;
+	//vector<pair<int, int>>dangerline;
 };
 
 #endif // !_C_Game_h_

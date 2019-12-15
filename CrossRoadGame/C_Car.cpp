@@ -4,8 +4,6 @@ car::car(int x, int y)
 {
 	xC = x;
 	line = y;
-	length = 9;
-	type = 1;
 }
 car::~car()
 {
@@ -21,8 +19,8 @@ void car::display()
 void car::move(int step)
 {
 	xC += step;
-	if (xC > 96) xC = 18;
-	else if (xC < 0) xC = 96;
+	if (xC > 93) xC = 18;
+	else if (xC < 0) xC = 93;
 }
 int car::lastPoint()
 {

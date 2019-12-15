@@ -1,53 +1,34 @@
 #include "C_Game.h"
+void dangerzonemove(pair<int, int>&a, int step) {
+		a.first += step;
+		a.second += step;
+	if (a.second > 93&&a.first<93) {
+		a.second = a.first;
+		a.first = 9;
+	}
+	else if (a.first > 93) {
+		a.first = 9;
+		a.second = 22;
+	}
+}
 
 game::game() {
 	x = 18;
 	line = 1;
 	speed = 350;
-	round = 1;
 	vehicle* tmp = new car(18, 1);
 	vehi.push_back(tmp);
-	vehicle* tmp2 = new truck(18, 2);
+	vehicle* tmp2 = new truck(18, 3);
 	vehi.push_back(tmp2);
-	vehicle* tmp3 = new bird(18, 3);
+	vehicle* tmp3 = new bird(31, 3);
 	vehi.push_back(tmp3);
-	vehicle* tmp4 = new dino(18, 4);
+	vehicle* tmp4 = new dino(31, 1);
 	vehi.push_back(tmp4);
+	danger1.first =danger2.first= 9;
+	danger1.second =danger2.second= 31;
 	player = new user;
 }
-game::game(string a) {
-	x = 18;
-	line = 1;
-	speed = 350;
-	ifstream fin;
-	fin.open("H:\\Hasagi.txt");
-	if (!fin.is_open())
-		cout << "File is not existed";
-	int line, amount;
-	fin >> round;
-	for (int i = 0; i < 4; i++) {//4 lines
-		fin >> line >> amount;
-		for (int j = 0; j < amount; j++) {
-			int xC, type;
-			fin >> xC >> type;
-			vehicle*tmp;
-			if (type == 1) {//car
-				tmp = new car(xC, line);
-			}
-			else if (type == 2) {//truck
-				tmp = new truck(xC, line);
-			}
-			else if (type == 3) {//bird
-				tmp = new bird(xC, line);
-			}
-			else {//dinosaur
-				tmp = new dino(xC, line);
-			}
-			vehi.push_back(tmp);
-		}
-	}
-	player = new user;
-}
+
 game::~game() {
 	if (vehi.size() > 0)
 	{
@@ -64,241 +45,75 @@ void game::display()
 	for (int i = 0; i < vehi.size(); ++i)
 		vehi[i]->display();
 }
-int game::pauseLane()
-{
-	srand((int)time(0));
-	return (rand() % (4 + 1));
-}
-void game::nextRound()
-{
-	srand((int)time(0));
-	int r = 1 + (rand() % (4 + 1 - 1));
-	vector<int> line;
-	line.push_back(1);
-	line.push_back(2);
-	line.push_back(3);
-	line.push_back(4);
-	for (int i = 0; i < line.size(); ++i)
-		if (line[i] == r)
-			line.erase(line.begin()+i);
-	vehi.clear();
-	vehicle* v1 = new car(18, 1);
-	vehi.push_back(v1);
-	vehicle* v2 = new truck(18, 2);
-	vehi.push_back(v2);
-	vehicle* v3 = new bird(18, 3);
-	vehi.push_back(v3);
-	vehicle* v4 = new dino(18, 4);
-	vehi.push_back(v4);
-	int dist = 14;
-	if (round == 2)
-		speed = 200;
-	else if (round == 3)
-	{
-		vehicle* tmp = new car(18 + dist, r);
-		vehi.push_back(tmp);
-		vehicle* tmp2 = new truck(18 + dist, line[0]);
-		vehi.push_back(tmp2);
-		vehicle* tmp3 = new bird(18 + dist, line[1]);
-		vehi.push_back(tmp3);
-		vehicle* tmp4 = new dino(18 + dist, line[2]);
-		vehi.push_back(tmp4);
-		speed = 200;
-	}
-	else if (round == 4)
-	{
-		vehicle* tmp = new car(18+dist, r);
-		vehi.push_back(tmp);
-		vehicle* tmpC = new car(18+2*dist, r);
-		vehi.push_back(tmpC);
-		vehicle* tmp2 = new truck(18+dist, line[0]);
-		vehi.push_back(tmp2);
-		vehicle* tmp2T = new truck(18+2*dist, line[0]);
-		vehi.push_back(tmp2T);
-		vehicle* tmp3 = new bird(18+dist, line[1]);
-		vehi.push_back(tmp3);
-		vehicle* tmp3B = new bird(18+2*dist, line[1]);
-		vehi.push_back(tmp3B);
-		vehicle* tmp4 = new dino(18+dist, line[2]);
-		vehi.push_back(tmp4);
-		vehicle* tmp4D = new dino(18+2*dist, line[2]);
-		vehi.push_back(tmp4D);
-		speed = 100;
-	}
-	else if(round==5){
-		speed = 40;
-		vehicle* tmp = new car(18 + dist, r);
-		vehi.push_back(tmp);
-		vehicle* tmpC = new car(18 + 2 * dist, r);
-		vehi.push_back(tmpC);
-		vehicle* tmp2 = new truck(18 + dist, line[0]);
-		vehi.push_back(tmp2);
-		vehicle* tmp2T = new truck(18 + 2 * dist, line[0]);
-		vehi.push_back(tmp2T);
-		vehicle* tmp3 = new bird(18 + dist, line[1]);
-		vehi.push_back(tmp3);
-		vehicle* tmp3B = new bird(18 + 2 * dist, line[1]);
-		vehi.push_back(tmp3B);
-		vehicle* tmp4 = new dino(18 + dist, line[2]);
-		vehi.push_back(tmp4);
-		vehicle* tmp4D = new dino(18 + 2 * dist, line[2]);
-		vehi.push_back(tmp4D);
-	}
-}
 void game::move()
 {
-	int step = 5;
-	color(240);
-	display();
 	player->display();
-	int lin = pauseLane();
-	Sleep(speed);
-	color(7);
-	display();
-	for (int i = 0; i < vehi.size(); ++i)
-	{
-		int xv,yv;
-		vehi[i]->getCor(xv, yv);
-		if(yv != lin)
-			vehi[i]->move(step);
-	}
+	int step = 13;
 	color(240);
 	display();
+	int j = 0;
+	Line();
+	while (j<25) {
+		Sleep(speed);
+		color(7);
+		display();
+		for (int i = 0; i < vehi.size(); ++i) {
+			vehi[i]->move(step);
+			dangerzonemove(danger1, step);
+			dangerzonemove(danger2, step);
+		}
+		color(240);
+		display();		
+		if (!player->alive) cout << "Heo";
+		else cout << ".";
+		j++;
+	}
+	/*if (pos.second == 1) {
+		if (pos.first > danger1.first&&pos.first < danger1.second) {
+			player->alive = false;
+		}
+	}*/
 	color(7);
 }
-
-int game::movePlayer() {
-	int m = 1;
+void game::movePlayer() {
+	//player->display();
+	int m = _getch(); Sleep(speed);
+	pos = player->pos();
 	color(240);
-	int xp, yp;
-	while (1)
+	while (m != 13&&player->alive)
 	{
-		while (!_kbhit())
-			move();
-		m = _getch();
+		Sleep(100);
 		color(7);
-		player->disAppear();
+		player->display();
 		if (m == 87 || m == 119)
-		{
-			player->move(0);
-			player->getCor(xp, yp);
-			if (yp == 1)
-			{
-				++round;
-				if (round > 5) {
-					system("cls");
-					cout << "Congratulation" << endl;
-					return 1;
-				}
-				system("cls");
-				Sleep(700);
-				nextRound();
-				player->move(1);
-				player->move(1);
-				player->move(1);
-				player->move(1);
-				player->move(1);
-			}
-
-		}
+			player->move(0); // go up
 		else if (m == 83 || m == 115)
-			player->move(1);
+			player->move(1); //go down
 		else if (m == 68 || m == 100)
-			player->move(2);
+			player->move(2); //go right
 		else if (m == 65 || m == 97)
-			player->move(3);
-		else if (m == 'p' || m == 'P') {
-			int tmp = pauseGame();
-			if (tmp == 0)
-				return -1;
-		}
-		else return -1;
+			player->move(3); //go left
 		color(240);
 		player->display();
-		Sleep(100);
-	}
-	return 0;
-}
-int game::pauseGame()
-{
-	system("cls");
-	cout << "This is Screen Pause" << endl;
-	cout << "Press 1: Save And Quit" << endl;
-	cout << "Press 2: Back To Game" << endl;
-	if (_getch() == 49)//save and quit
-	{
-		system("cls");
-		SaveGame();
-		return 1;
-	}
-	system("cls");
-	return 0;
-}
-void game::gamePlay()
-{
-	int xu, yu;
-	player->getCor(xu, yu);
-	int xv, yv;
-	movePlayer();
-	for (int i = 0; i < vehi.size(); ++i)
-	{
-		vehi[i]->getCor(xv, yv);
-		if ( yu == yv)
-		{
-			if (xv-vehi[i]->pos()<=xu && xu<=xv) {
-				cout << "Game Over" << endl;
-				return;
-			}
-		}
+		m = _getch();
+		Sleep(speed);
 	}
 }
-bool game::check_Intersec()
-{
-	int xu, yu;
-	player->getCor(xu, yu);
-	int xv, yv;
-	movePlayer();
-	for (int i = 0; i < vehi.size(); ++i)
-	{
-		vehi[i]->getCor(xv, yv);
-		if (yu == yv)
-		{
-			int zone = vehi[i]->pos();
-			if (xv - zone <= xu && xu <= xv ) {
-				cout << "Game Over" << endl;
-				return true;
-			}
+void game::SubThread() {
+	int step = 13;
+	while (1) {
+		if (player->alive) {
+			pos = player->pos();
 		}
+		Sleep(speed);
+		color(7);
+		display();
+		for (int i = 0; i < vehi.size(); ++i) {
+			vehi[i]->move(step);
+			dangerzonemove(danger1, step);
+			dangerzonemove(danger2, step);
+		}
+		color(240);
+		display();
 	}
-	return false;
-}
-void game::SaveGame() {
-	system("cls");
-	//cin.ignore(1000, '\n');
-	string path;
-	color(7);
-	cout << "Input the destination path:"; getline(cin, path);
-	ofstream fout;
-	fout.open(path.c_str(), ios::trunc);
-	fout << round << endl;//Save Round to file
-	for (int i = 0; i < 4; i++) { //4 lines
-		vector <pair<int, int>>ObjinLine;
-		for (int j = 0; j < vehi.size(); j++) {
-			int Xo, line;
-			vehi[j]->getCor(Xo, line);
-			if (line == i + 1) {
-				pair<int, int>ObjInfo(Xo, vehi[j]->Objtype());
-				ObjinLine.push_back(ObjInfo);
-			}
-		}
-		fout << i + 1 << endl;//Save Line to file
-		fout << ObjinLine.size() << endl;//Save amount of objs in one line to file
-		for (int k = 0; k < ObjinLine.size(); k++) {
-			fout << ObjinLine[k].first << " " << ObjinLine[k].second << endl;
-		}
-	}
-	fout.close();
-	cout << "Save file successfully" << endl;
-	Sleep(1000);
-	system("cls");
 }
