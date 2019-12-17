@@ -23,4 +23,9 @@ int Menu();
 void fixConsoleWindows();
 void CROSS_STREET_SLASH();
 void CROSS_STREET();
+void PauseBoard();
+void clearBoard();
+void Congrat();
+void GameOver();
+int setting();
 #endif // FRONTEND_H_INCLUDED

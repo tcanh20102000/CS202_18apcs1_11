@@ -19,7 +19,8 @@ public:
 	int movePlayer();
 	int pauseGame();
 	void gamePlay();
-	bool check_Intersec();
+//	bool check_Intersec();
+	bool check_Intersec(bool& isDead);
 	void nextRound();
 	int SaveGame();
 	bool loadGame();

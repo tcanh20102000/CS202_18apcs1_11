@@ -5,7 +5,6 @@ game::game() {
 	line = 1;
 	speed = 350;
 	round = 1;
-	player = new user;
 	light = new displayLight;
 	light2 = new displayLight;
 }
@@ -38,6 +37,9 @@ void game::nextRound()
 	srand((int)time(0));
 	int dist = rand_Range(12, 15);
 	int xco = 6 + rand() % 85, y = 4;
+	if (player)
+		delete player;
+	player = new user;
 	if (round == 4 || round == 3)
 	{
 		if (xco + 2 * dist > 94)
@@ -148,6 +150,7 @@ void game::move()
 	color(240);
 	display();
 	Line();
+	gotoxy(98, 7); cout << "ROUND:" << round;
 	player->display();
 	Sleep(speed);
 	color(7);
@@ -183,12 +186,8 @@ int game::movePlayer() {
 		while (!_kbhit())
 		{
 			move();
-			if (!check_Intersec())
-			{
-				isDead = true;
-				PlaySound(TEXT("gameover.wav"), NULL, SND_FILENAME | SND_ASYNC);
-				return -1;
-			}
+			check_Intersec(isDead);
+			if (isDead) return-1;
 		}
 		m = _getch();
 		color(7);
@@ -197,20 +196,16 @@ int game::movePlayer() {
 		{
 			player->move(0);
 			player->getCor(xp, yp);
-//			PlaySound(TEXT("jump.wav"), NULL, SND_FILENAME | SND_ASYNC);
-			if (!check_Intersec())
-			{
-				PlaySound(TEXT("dead.wav"), NULL, SND_FILENAME | SND_ASYNC);
-				Sleep(700);
-				PlaySound(TEXT("gameover.wav"), NULL, SND_FILENAME | SND_ASYNC);
-				isDead = true;
-				return -1;
-			}
+			check_Intersec(isDead);
+			if (isDead) return -1;
 			if (yp < 4)
 			{
 				++round;
 				if (round > 5) {
+					Congrat();
 					PlaySound(TEXT("champion.wav"), NULL, SND_FILENAME | SND_ASYNC);
+					Sleep(4000);
+					system("cls");
 					return 2; // wingame return 0;
 				}
 				nextRound();
@@ -226,42 +221,55 @@ int game::movePlayer() {
 		else if (m == 83 || m == 115)
 		{
 			player->move(1);
-			if (!check_Intersec())
-			{
-				isDead = true;
-				return -1;
-			}
+			check_Intersec(isDead);
+			if (isDead) return-1;
 		}
 		else if (m == 68 || m == 100)
 		{
 			player->move(2);
-			if (!check_Intersec())
-			{
-				isDead = true;
-				return -1;
-			}
+			check_Intersec(isDead);
+			if (isDead) return-1;
+
 		}
 		else if (m == 65 || m == 97)
 		{
 			player->move(3);
-			if (!check_Intersec())
-			{
-				isDead = true;
-				return -1;
-			}
+			check_Intersec(isDead);
+			if (isDead) return-1;
 		}
 		else if (m == 'p' || m == 'P') {
 			int tmp = pauseGame();
 			if (tmp == 1)
-				return 1; // save game and back to menu return 1;
+			{
+				color(7);
+				return 1;
+			}// save game and back to menu return 1;
 			else continue;
-//			system("cls");
+			color(7);
+		}
+		else if (m == 'l' || m == 'L')
+		{
+			system("cls");
+			if (loadGame() == true)
+			{
+				system("cls");
+				return movePlayer();
+/*				if (movePlayer() == 0)
+				{
+					system("cls");
+					return 0;
+				}*/
+			}
+			system("cls");
+			color(7);
 		}
 		else if (m == 27)
 		{
 			system("cls");
-			cout << "Do You Want To Exit Game?(Y/N)?";
+			PauseBoard();
+			gotoxy(37, 9); cout << "Do You Want To Exit Game?(Y/N)?";
 			int n = _getch();
+			color(7);
 			//Back to Menu
 			while (1)
 			{
@@ -286,9 +294,11 @@ int game::movePlayer() {
 int game::pauseGame()
 {
 	system("cls");
-	cout << "<<<< Pause Game >>>>" << endl;
-	cout << "Press L: Save And Quit" << endl;
-	cout << "Press Esc: Back" << endl;
+	PauseBoard();
+	gotoxy(37, 9); cout << "<<<< Pause Game >>>>" << endl;
+	gotoxy(37, 10); cout << "Press L: Save And Quit" << endl;
+	gotoxy(37, 11); cout << "Press Esc: Back" << endl;
+	color(7);
 	int m = _getch();
 	while (1)
 	{
@@ -303,12 +313,12 @@ int game::pauseGame()
 		}
 		else if (m == 27)
 		{
+			color(7);
 			system("cls");
 			return 2;
 		}
 		m = _getch();
 	}
-//	return 1;
 }
 void game::gamePlay()
 {
@@ -326,7 +336,7 @@ void game::gamePlay()
 		}
 	}
 }
-bool game::check_Intersec()
+/*bool game::check_Intersec()
 {
 	int xu, yu;
 	player->getCor(xu, yu);
@@ -351,70 +361,134 @@ bool game::check_Intersec()
 		}
 	}
 	return true;
+}*/
+bool game::check_Intersec(bool &isDead)
+{
+	int xu, yu;
+	player->getCor(xu, yu);
+	int xv, yv;
+	bool flag = true;
+	for (int i = 0; i < vehi.size(); ++i)
+	{
+		vehi[i]->getCor(xv, yv);
+		if (vehi[i]->Objtype() == 1 || vehi[i]->Objtype() == 2)
+		{
+			if (((xu <= xv + 8 && xu >= xv) || (xv <= xu + 5 && xv >= xu)) && yv == yu)
+			{
+				flag = false;
+				break;
+			}
+		}
+		else if (vehi[i]->Objtype() == 3)
+		{
+			if (((xu <= xv + 19 && xu >= xv) || (xv <= xu + 5 && xv >= xu)) && yv == yu - 1)
+			{
+				flag = false;
+				break;
+			}
+		}
+		else if (vehi[i]->Objtype() == 4)
+		{
+			if (((xu <= xv + 6 && xu >= xv) || (xv <= xu + 5 && xv >= xu)) && yu - 1 == yv)
+			{
+				flag = false;
+				break;
+			}
+		}
+	}
+	if (!flag)
+	{
+		GameOver();
+		PlaySound(TEXT("gameover.wav"), NULL, SND_FILENAME | SND_ASYNC);
+		Sleep(3000);
+		isDead = true;
+	}
+	return flag;
 }
+
 int game::SaveGame() {
 	system("cls");
 	//cin.ignore(1000, '\n');
 	string path;
 	color(7);
-	cout << "Press Esc: Back" << endl;
-	cout << "Input the destination path:";
+	PauseBoard();
+	gotoxy(37, 9); cout << "Press Esc: Back";
+	gotoxy(37, 10); cout << "Input the destination path:";
+//	color(7);
 	int m =_getch();
 	if (m == 27)
 	{
+		color(7);
 		system("cls");
 		return 1;
 	}
 	getline(cin, path);
-	string file_name;
-	cout << "Enter File Name: "; getline(cin, file_name);
-	path = path + "\\" + file_name + ".txt";
+//	string file_name;
+//	gotoxy(37, 11); cout << "Enter File Name: "; getline(cin, file_name);
+//	path = path + "\\" + file_name + ".txt";
+	path = path + ".txt";
 	ofstream fout;
 	fout.open(path.c_str(), ios::trunc);
 	fout << round << endl;//Save Round to file
+	fout << vehi.size() << endl;
 	for (int i = 0; i < 4; i++) { //4 lines
-		vector <pair<int, int>>ObjinLine;
+//		vector <pair<int, int>>ObjinLine;
+		vector<int>ObjinLine;
 		for (int j = 0; j < vehi.size(); j++) {
 			int Xo, line;
 			vehi[j]->getCor(Xo, line);
-			if (line == i + 1) {
+			int type;
+			type = vehi[j]->Objtype();
+/*			if (line == i + 1) {
 				pair<int, int>ObjInfo(Xo, vehi[j]->Objtype());
 				ObjinLine.push_back(ObjInfo);
-			}
+			}*/
+			fout << type << endl;
+			fout << Xo << " " << line << endl;
 		}
-		fout << i + 1 << endl;//Save Line to file
+/*		fout << i + 1 << endl;//Save Line to file
 		fout << ObjinLine.size() << endl;//Save amount of objs in one line to file
 		for (int k = 0; k < ObjinLine.size(); k++) {
 			fout << ObjinLine[k].first << " " << ObjinLine[k].second << endl;
-		}
+
+		}*/
 	}
 	fout.close();
-	cout << "Save file successfully" << endl;
-	cout << "Do you want continue?(Y or N)";
+	system("cls");
+	color(7);
+	PauseBoard();
+	gotoxy(37, 9); cout << "Save file successfully" << endl;
+	gotoxy(37, 10); cout << "Do you want continue?(Y or N)";
+	color(7);
 	int n = _getch();
-//	system("cls");
 	while (1)
 	{
 		if (n == 'Y' || n == 'y')
-			return 2;
-		else if (n == 'N' || n == 'n')
+		{
+			system("cls");
 			return 1;
+		}
+		else if (n == 'N' || n == 'n')
+		{
+			system("cls");
+			return 2;
+		}
 		n = _getch();
 	}
-	Sleep(1000);
-	system("cls");
-	return 2;
+//	Sleep(1000);
+//	system("cls");
+//	return 2;
 }
 bool game::loadGame() {
 	color(7);
 	system("cls");
-	if (vehi.size() != 0)
-		vehi.clear();
 	string path;
-	cout << "Press E: Back To Menu" << endl;
-	cout << "Please Enter Load File Path: ";
+	PauseBoard();
+	gotoxy(37, 9); cout << "Press Esc: Back To Menu" << endl;
+	gotoxy(37, 10); cout << "Please Enter Load File Path: ";
+	color(7);
 	int n = _getch();
-	if (n == 'E' || n == 'e')
+	if (n == 27)
 	{
 		return false;
 	}
@@ -423,34 +497,44 @@ bool game::loadGame() {
 	fin.open(path);
 	if (!fin.is_open())
 	{
-		cout << "File is not existed";
+		PauseBoard();
+		gotoxy(37, 9); cout << "File is not existed";
+		color(7);
 		Sleep(700);
 		return false;
 	}
+	if (vehi.size() != 0)
+	{
+		for (int i = 0; i < vehi.size(); ++i)
+			delete vehi[i];
+		vehi.clear();
+	}
 	int line, amount;
 	fin >> round;
-	for (int i = 0; i < 4; i++) {//4 lines
-		fin >> line >> amount;
-		for (int j = 0; j < amount; j++) {
-			int xC, type;
-			fin >> xC >> type;
-			vehicle* tmp;
-			if (type == 1) {//car
-				tmp = new car(xC, line);
-			}
-			else if (type == 2) {//truck
-				tmp = new truck(xC, line);
-			}
-			else if (type == 3) {//bird
-				tmp = new bird(xC, line);
-			}
-			else {//dinosaur
-				tmp = new dino(xC, line);
-			}
-			vehi.push_back(tmp);
+	fin >> amount;
+	for (int i = 0; i < 4; i++) 
+	{//4 lines
+	for (int j = 0; j < amount; j++) {
+		int xC, line, type;
+		fin >> type >> xC >> line;
+		vehicle* tmp;
+		if (type == 1) {//car
+			tmp = new car(xC, line);
 		}
+		else if (type == 2) {//truck
+			tmp = new truck(xC, line);
+		}
+		else if (type == 3) {//bird
+			tmp = new bird(xC, line);
+		}
+		else {//dinosaur
+			tmp = new dino(xC, line);
+		}
+		vehi.push_back(tmp);
 	}
-	delete player;
+	}
+	if(player)
+		delete player;
 	player = new user;
 	return true;
 }

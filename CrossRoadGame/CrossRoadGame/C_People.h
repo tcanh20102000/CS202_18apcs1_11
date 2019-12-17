@@ -13,6 +13,7 @@ public:
 	void display();
 	void disAppear();
 	void getCor(int &x, int &line);
+	void setCor(int x, int line);
 private:
 	int xP, yP;
 	displayB* draw;

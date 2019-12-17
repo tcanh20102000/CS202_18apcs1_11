@@ -34,9 +34,9 @@ void user::move(int direct)
 	else
 		xP -= 5;
 	if (xP <= 10)
-		xP = 90;
+		xP = 5;
 	else if (xP >= 90)
-		xP = 10;
+		xP = 90;
 	if (yP > 24)
 		yP = 24;
 }
@@ -44,6 +44,10 @@ void user::getCor(int &x, int &line)
 {
 	x = xP;
 	line = yP;
+}
+void user::setCor(int x, int line) {
+	xP = x;
+	yP = line;
 }
 bool user::isInter(int x)
 {

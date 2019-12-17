@@ -105,6 +105,7 @@ void CROSS_STREET_SLASH() {
 	gotoxy(95, 8); cout << "        ";
 	gotoxy(104, 8); cout << "        ";
 	gotoxy(116, 8); cout << "   ";
+	color(7);
 }
 void CROSS_STREET() {
 	gotoxy(3, 2);
@@ -201,10 +202,11 @@ int Menu() {
 	int choosen = 14;//Highlight choosen path
 	int nor = 11;
 	vector<string>Menu;
-	Menu.push_back("New game"); Menu.push_back("Load game"); Menu.push_back("Settings");
+	Menu.push_back("New game"); Menu.push_back("Load game"); Menu.push_back("Settings"); Menu.push_back("Exit");
 	color(choosen); gotoxy(50, 4); cout << Menu[0];
 	color(nor); gotoxy(50, 6); cout << Menu[1];
 	gotoxy(50, 8); cout << Menu[2];
+	gotoxy(50, 10); cout << Menu[3];
 	while (1) {
 		if (_kbhit())
 		{
@@ -221,7 +223,7 @@ int Menu() {
 					gotoxy(50, pointpos);
 					color(choosen); cout << Menu[(pointpos - 4) / 2];
 				}
-				else if (ch == 115 && pointpos != 8) {
+				else if (ch == 115 && pointpos != 10) {
 					gotoxy(50, pointpos); color(nor);
 					cout << Menu[(pointpos - 4) / 2];
 					pointpos += 2;
@@ -237,6 +239,8 @@ int Menu() {
 					return 1;//Load game
 				if (pointpos == 8)
 					return 2;//Setting
+				if (pointpos == 10)
+					return 3;
 			}
 		}
 	}
@@ -290,7 +294,101 @@ void Line() {
 	//	printvertical(94, y);
 		//Instruction
 	color(11);
-	gotoxy(96, y); cout << "Press L to save game";
-	gotoxy(96, y + 5); cout << "Press T to load save game";
-	gotoxy(96, y + 10); cout << "Press W,A,S,D to move the char";
+	color(11);
+	gotoxy(98, y + 2); cout << "P: Pause game";
+	gotoxy(98, y + 3); cout << "Esc: Quit Game";
+	gotoxy(98, y + 4); cout << "L: Load Game";
+	gotoxy(98, y + 8); cout << "W: UP";
+	gotoxy(98, y + 9); cout << "S: DOWN";
+	gotoxy(98, y + 10); cout << "A: RIGHT";
+	gotoxy(98, y + 11); cout << "D: LEFT";
+
+}
+void GameOver() {
+	system("cls");
+	color(14);
+	ifstream fin;
+	fin.open("GameOver.txt");
+	if (!fin.is_open()) {
+		std::cout << "File not found" << std::endl;
+	}
+	else {
+		for (int i = 0; i < 4; i++) {
+			string print;
+			getline(fin, print);
+			gotoxy(30, i); cout << print;
+		}
+	}
+	fin.close();
+}
+void Congrat() {
+	system("cls");
+	color(14);
+	ifstream fin;
+	fin.open("Congrat.txt");
+	if (!fin.is_open()) {
+		std::cout << "File not found" << std::endl;
+	}
+	else {
+		for (int i = 0; i < 4; i++) {
+			string print;
+			getline(fin, print);
+			gotoxy(20, i); cout << print;
+		}
+	}
+	fin.close();
+}
+void PauseBoard() {//new
+	color(114);//Box color
+	int x0 = 35;
+	int y0 = 8;
+	for (int i = 0; i < 12; i++) {
+		for (int j = 0; j < 60; j++) {
+			gotoxy(x0 + j, y0 + i); cout << " ";
+		}
+	}
+	color(112);
+	gotoxy(x0 + 1, y0); printf("%c", 201);
+	gotoxy(x0 + 1, y0 + 11); printf("%c", 200);
+	gotoxy(x0 + 58, y0); printf("%c", 187);
+	gotoxy(x0 + 58, y0 + 11); printf("%c", 188);
+	for (int i = 2; i < 58; i++) {
+		gotoxy(x0 + i, y0); printf("%c", 205);
+		gotoxy(x0 + i, y0 + 11); printf("%c", 205);
+	}
+	for (int i = 1; i < 11; i++) {
+		gotoxy(x0 + 1, y0 + i); printf("%c", 186);
+		gotoxy(x0 + 58, y0 + i); printf("%c", 186);
+	}
+	color(114);
+}
+void clearBoard() {
+	color(7);
+	int x0 = 35;
+	int y0 = 8;
+	for (int i = 0; i < 12; i++) {
+		for (int j = 0; j < 60; j++) {
+			gotoxy(x0 + j, y0 + i); cout << " ";
+		}
+	}
+}
+int setting() {
+	system("cls");
+	PauseBoard();
+	gotoxy(37, 9); cout << "Sound";
+	gotoxy(37, 11); cout << "Press Esc to Exit";
+	gotoxy(46, 9); cout << "1.ON"; gotoxy(56, 9); cout << "2.OFF";
+	int m = _getch();
+	color(7);
+	while (1)
+	{
+		if (m == 27)
+			return 0;
+		else if (m == '1')
+			return 1;
+		else if (m == '2')
+			return 2;
+		m = _getch();
+	}
+
 }
